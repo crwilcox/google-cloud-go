@@ -785,7 +785,12 @@ func (it *QuerySnapshotIterator) Next() (*QuerySnapshot, error) {
 	}
 	btree, changes, readTime, err := it.ws.nextSnapshot()
 	if err != nil {
+		// TODO: verify if stream was completed, or EOF is from an early terminations
+		// NOTE(crwilcox): possible thought, add var to detect if stream is completed, or err early?
+		// if err == io.EOF && it.ws.streamCompleted {
 		if err == io.EOF {
+			// NOTE(crwilcox): this is where we have iterator done
+
 			err = iterator.Done
 		}
 		it.err = err
